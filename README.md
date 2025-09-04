@@ -1,4 +1,4 @@
-# ☕ SwiftBar Caffeinate Toggle
+# ⚡ SwiftBar Caffeinate Toggle
 
 A [SwiftBar](https://swiftbar.app/) plugin to control macOS [`caffeinate`](https://ss64.com/osx/caffeinate.html) directly from the menu bar.
 
@@ -20,28 +20,22 @@ Supports **indefinite mode**, **timed sessions**, **safe process tracking**, and
 
 ---
 
-## 📸 Screenshots
-
-*(Add screenshots of menu bar and dropdown here)*
-
----
-
 ## 🔧 Installation
 
 1. Install [SwiftBar](https://swiftbar.app/).
 2. Choose or create a **Plugins folder** (Preferences → General).
 3. Copy the plugin into your folder as `swiftbar-caffeinate-toggle.1m.sh`
 4. Make it executable: `chmod +x ~/SwiftBarPlugins/swiftbar-caffeinate-toggle.1m.sh`
-5. SwiftBar will auto-detect it and show ☕ / 💤 in your menu bar.
+5. SwiftBar will auto-detect it and show ⚡ / 🌙 in your menu bar.
 
 ---
 
 ## ⚙️ Usage
 
 * Menu bar title
-  * ☕ Keep Awake — caffeinate running
-  * ☕ Keep Awake (external) — caffeinate detected outside plugin
-  * 💤 Auto-sleep — no caffeinate running
+  * ⚡ Keep Awake — caffeinate running
+  * ⚡ Keep Awake (external) — caffeinate detected outside plugin
+  * 🌙 Auto-sleep — no caffeinate running
 * Dropdown options
   * Toggle → start/stop indefinite keep-awake
   * Stop Keep Awake → stop only

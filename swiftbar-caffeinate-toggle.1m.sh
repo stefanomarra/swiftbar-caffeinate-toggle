@@ -4,6 +4,7 @@
 # - Tracks its own caffeinate PID (no collateral pkill)
 # - Supports timed sessions with live countdown
 # - Warns if running on battery
+# - Uses SF Symbols for crisp icons in the menu bar
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -23,6 +24,12 @@ MKDIR="/bin/mkdir"
 RM="/bin/rm"
 CAT="/bin/cat"
 TR="/usr/bin/tr"
+
+# Colors for SF Symbols
+COLOR_AWAKE="#34C759"     # green
+COLOR_SLEEP="#9AA0A6"     # gray
+COLOR_EXTERNAL="#0A84FF"  # blue
+COLOR_BATTERY="#FF9500"   # orange
 
 # Persistent state
 STATE_DIR="${HOME}/Library/Application Support/SwiftBar/Caffeinate"
@@ -104,7 +111,7 @@ on_battery() {
 if [[ "${1:-}" == "--action" ]]; then
   case "${2:-}" in
     toggle)
-      if read_state 2>/div/null && is_pid_running "${PID:-}"; then
+      if read_state 2>/dev/null && is_pid_running "${PID:-}"; then
         stop_if_ours
       else
         start_indefinite
@@ -121,30 +128,46 @@ if [[ "${1:-}" == "--action" ]]; then
   esac
 fi
 
-# ===== Render menu =====
-status_title="💤 Auto-sleep"
-subtitle="Enable Keep Awake - Indefinite"
+# ===== Determine state for UI =====
 running=false
 countdown=""
+subtitle="Enable Keep Awake - Indefinite"
+sficon="moon.fill"
+color="$COLOR_SLEEP"
 
 if read_state 2>/dev/null && is_pid_running "${PID:-}"; then
   running=true
+  sficon="bolt.fill"
+  color="$COLOR_AWAKE"
   if [[ "${MODE:-}" == "timed" && -n "${UNTIL:-}" ]]; then
-    countdown=" ($(remaining_human "$UNTIL"))"
+    countdown=" $(remaining_human "$UNTIL")"
   fi
-  status_title="☕ Keep Awake${countdown}"
   subtitle="Disable Keep Awake"
 else
   # If our state file is missing but a manual caffeinate is running, detect it
   if $PGREP -x caffeinate >/dev/null 2>&1; then
-    status_title="☕ Keep Awake (external)"
+    sficon="bolt.fill"
+    color="$COLOR_EXTERNAL"
     subtitle="Managed outside plugin"
   fi
 fi
 
-echo "$status_title"
+# Battery override (only if our session is running)
+if $running && on_battery; then
+  color="$COLOR_BATTERY"
+fi
+
+# ===== Menu bar (SF Symbol icon + optional countdown text) =====
+# Use an empty title with only sficon, and append countdown if present.
+if [[ -n "$countdown" ]]; then
+  echo " $countdown | sfimage=$sficon color=$color"
+else
+  echo " | sfimage=$sficon color=$color"
+fi
+
 echo "---"
 
+# ===== Dropdown =====
 if $running; then
   echo "Toggle ($subtitle) | bash='$0' param1=--action param2=toggle terminal=false refresh=true"
   echo "Stop Keep Awake | bash='$0' param1=--action param2=stop terminal=false refresh=true"

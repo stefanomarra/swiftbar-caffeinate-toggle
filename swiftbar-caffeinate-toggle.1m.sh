@@ -132,12 +132,12 @@ fi
 running=false
 countdown=""
 subtitle="Enable Keep Awake - Indefinite"
-sficon="moon.fill"
+sficon="moon.circle"
 color="$COLOR_SLEEP"
 
 if read_state 2>/dev/null && is_pid_running "${PID:-}"; then
   running=true
-  sficon="bolt.fill"
+  sficon="bolt.circle"
   color="$COLOR_AWAKE"
   if [[ "${MODE:-}" == "timed" && -n "${UNTIL:-}" ]]; then
     countdown=" $(remaining_human "$UNTIL")"
@@ -146,7 +146,7 @@ if read_state 2>/dev/null && is_pid_running "${PID:-}"; then
 else
   # If our state file is missing but a manual caffeinate is running, detect it
   if $PGREP -x caffeinate >/dev/null 2>&1; then
-    sficon="bolt.fill"
+    sficon="bolt.circle"
     color="$COLOR_EXTERNAL"
     subtitle="Managed outside plugin"
   fi
